@@ -1,2 +1,2 @@
 # procs
-Protocol for Client-Server
+Protocol for Client-Server in WebSockets context

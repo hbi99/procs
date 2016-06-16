@@ -1,0 +1,23 @@
+{
+  "name": "procs",
+  "version": "1.0.0",
+  "description": "Protocol for Client-Server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hbi99/procs.git"
+  },
+  "author": "Hakan Bilgin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hbi99/procs/issues"
+  },
+  "homepage": "https://github.com/hbi99/procs#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "socket.io": "^1.4.6"
+  }
+}
