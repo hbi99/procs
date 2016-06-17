@@ -7,14 +7,18 @@ var app  = require('express')(),
 app.set('port', 3000);
 
 app.get('/', function(req, res) {
-	res.sendfile('public/index.htm');
+	res.sendFile(__dirname +'/public/index.htm');
 });
 
 io.on('connection', function(socket) {
 	//console.log('a user connected');
-	socket.on('chat message', function(msg) {
-		console.log( msg );
-		//io.emit('chat message', msg);
+	socket.on('client-request', function(cmd) {
+		console.log( cmd );
+		
+		setTimeout(function() {
+			cmd.b = cmd.a + 1;
+			io.emit('client-request', cmd);
+		}, cmd.a * 1000);
 	});
 });
 

@@ -14,6 +14,9 @@ form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 
 #messages li:nth-child(odd) { background: #eee; }
 
 </style>
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="http://local.github/QureJS/src/qure.js"></script>
 </head>
 <body>
 
@@ -23,31 +26,41 @@ form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 
 	<input id="m" autocomplete="off" /><button>Send</button>
 </form>
 
-<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-<script src="http://local.github/QureJS/dist/qure.min.js"></script>
 <script>
 
-var socket = io('http://localhost:3000');
+var socket = io('ws://localhost:3000');
 
-Qure.wait(1000)
-	.then(function() {
-		var cmd = {
-				'action': 'fs.read',
-				'path': '/res/json/test.json'
-			};
-		socket.emit('chat message', cmd);
+var server = Qure
+	.declare({
+		save: function(cmd) {
+			var that = this,
+				fn = function(msg) {
+					// pause queue
+					that.resume(msg);
+					// stop listening
+					socket.off('client-request', fn);
+				};
+
+			// pause queue
+			this.pause(true);
+
+			socket.emit('client-request', cmd);
+			socket.on('client-request', fn);
+		}
 	});
 
-// $('form').submit(function() {
-// 	socket.emit('chat message', $('#m').val());
-// 	$('#m').val('');
-// 	return false;
-// });
+server
+	.run('save', {a: 2})
+	.then(function(res) {
+		console.log(res);
+	});
 
-socket.on('chat message', function(msg) {
-	$('#messages').append($('<li>').text(msg));
-});
+
+server.fork()
+	.run('save', {a: 1})
+	.then(function(res) {
+		console.log(res);
+	});
 
 </script>
 </body>
